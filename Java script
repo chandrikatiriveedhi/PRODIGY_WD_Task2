@@ -1,0 +1,58 @@
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let startTime;
+    let updatedTime;
+    let difference;
+    let tInterval;
+    let running = false;
+    const display = document.getElementById('display');
+    const startStopBtn = document.getElementById('startStopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const lapBtn = document.getElementById('lapBtn');
+    const laps = document.getElementById('laps');
+
+    startStopBtn.addEventListener('click', function () {
+        if (!running) {
+            startStopBtn.innerHTML = "Pause";
+            running = true;
+            startTime = new Date().getTime() - difference;
+            tInterval = setInterval(updateTime, 1);
+        } else {
+            startStopBtn.innerHTML = "Start";
+            running = false;
+            clearInterval(tInterval);
+        }
+    });
+
+    resetBtn.addEventListener('click', function () {
+        clearInterval(tInterval);
+        running = false;
+        difference = 0;
+        display.innerHTML = "00:00:00";
+        startStopBtn.innerHTML = "Start";
+        laps.innerHTML = '';
+    });
+
+    lapBtn.addEventListener('click', function () {
+        if (running) {
+            const li = document.createElement('li');
+            li.innerHTML = display.innerHTML;
+            laps.appendChild(li);
+        }
+    });
+
+    function updateTime() {
+        updatedTime = new Date().getTime();
+        difference = updatedTime - startTime;
+        let hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        display.innerHTML = hours + ':' + minutes + ':' + seconds;
+    }
+});
+</script>
